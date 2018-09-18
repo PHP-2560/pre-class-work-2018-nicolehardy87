@@ -4,25 +4,25 @@
 #Generate 200 random values from the standard exponential dist.
 #standard exponential distribution has lambda = 1. 
 exp.draws.1 = rexp(200)
-mean(exp.draws.1)
-sd(exp.draws.1)
+mean_1 = mean(exp.draws.1)
+sd_1 = sd(exp.draws.1)
 
 #Repeat for rates lambda = 0.2, 5, 7.3, 10
 exp.draws.0.2 = rexp(200, rate = 0.2)
-mean(exp.draws.0.2)
-sd(exp.draws.0.2)
+mean_0.2 = mean(exp.draws.0.2)
+sd_0.2 = sd(exp.draws.0.2)
 
 exp.draws.5 = rexp(200, rate = 5)
-mean(exp.draws.5)
-sd(exp.draws.5)
+mean_5 = mean(exp.draws.5)
+sd_5 = sd(exp.draws.5)
 
 exp.draws.7.3 = rexp(200, rate = 7.3)
-mean(exp.draws.7.3)
-sd(exp.draws.7.3)
+mean_7.3 = mean(exp.draws.7.3)
+sd_7.3 = sd(exp.draws.7.3)
 
 exp.draws.10 = rexp(200, rate = 10)
-mean(exp.draws.10)
-sd(exp.draws.10)
+mean_10 = mean(exp.draws.10)
+sd_10 = sd(exp.draws.10)
 
 #Histogram of standard exponential distribution
 hist(exp.draws.1)
@@ -32,3 +32,39 @@ plot(exp.draws.1)
 
 #Scatter plot between the standard distribution and the exponential distribution with lambda = 10
 plot(exp.draws.1, exp.draws.10)
+
+#Scatterplots from mean vector of previous distribution
+mean_vector = c(mean_1, mean_0.2, mean_5, mean_7.3, mean_10)
+sd_vector = c(sd_1, sd_0.2, sd_5, sd_7.3, sd_10)
+rate_vector = c(1, 0.2, 5, 7.3, 10)
+plot(rate_vector, mean_vector) #part a
+plot(rate_vector, sd_vector) #part b
+plot(sd_vector, mean_vector) #part c
+
+#---------------------------------------------------------------------------------------------------------------------------------------------
+#Part II:
+#---------------------------------------------------------------------------------------------------------------------------------------------
+#Part A:
+big.exp.draws.1 = rexp(1100000)
+big_mean = mean(big.exp.draws.1)
+big_sd = sd(big.exp.draws.1)
+
+#Part B:
+hist(big.exp.draws.1)
+x = seq(0, 15, by = 0.1)
+plot(x, 1 - exp(-x))
+
+#Part C:
+mean(big.exp.draws.1[which(big.exp.draws.1 > 1)])
+
+#Part D:
+big.exp.draws.1.mat = matrix(data = big.exp.draws.1, nrow = 1100, ncol = 1000)
+big_hist = hist(big.exp.draws.1.mat)
+
+#Part E: 
+col_371_mean = mean(big.exp.draws.1.mat[, 371])
+
+#Part F:
+col_means = colMeans(big.exp.draws.1.mat)
+hist(col_means)
+s
