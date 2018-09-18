@@ -111,7 +111,8 @@ hist(col_means)
 
 The mean of the entire dataset is `r big_mean` and the standard deviation is `r big_sd` of the big dataset. The mean of the entries in the dataset greater than 1 is `r greater_than_1_mean`. The mean of the 371st column is `r col_371_mean`. 
 
-## Including Plots
+## Plots and Corresponding Explanations
+## Part 1:
 ### 3a
 ```{r, echo=FALSE}
 #Generate 200 random values from the standard exponential dist.
@@ -201,7 +202,7 @@ plot(sd_vector, mean_vector) #part c
 The graph shows the relationship between the standard deviation and the mean for different $\lambda$. There is a linear, 1:1 relationship between the mean and the standard deviation. This means that the mean and standard deviation increase proportionally to the inverse of  $\lambda$. Theoretically the mean is equal to the standard deviation in the exponential distributon, which is why the graph looks this way. 
 \ 
 
-## Part II: 
+## Part 2: 
 ```{r, echo = FALSE}
 #Part A:
 big.exp.draws.1 = rexp(1100000)
@@ -229,7 +230,7 @@ pexp(0:10, rate = 1)
 
 ```{r, echo = FALSE}
 #Part C:
-mean_big = mean(big.exp.draws.1[which(big.exp.draws.1 > 1)])
+greater_than_1_mean = mean(big.exp.draws.1[which(big.exp.draws.1 > 1)])
 ```
 ### Part 5d:
 ```{r, echo = FALSE}
@@ -237,6 +238,8 @@ mean_big = mean(big.exp.draws.1[which(big.exp.draws.1 > 1)])
 big.exp.draws.1.mat = matrix(data = big.exp.draws.1, nrow = 1100, ncol = 1000)
 big_hist = hist(big.exp.draws.1.mat)
 ```
+\  
+
 When we save the histogram as a variable, in this case big_hist, it becomes a list of 6 different variables: "breaks", "counts", "density"  "mids", "xname", "equidist."
 ```{r, echo = FALSE}
 #Part E: 
