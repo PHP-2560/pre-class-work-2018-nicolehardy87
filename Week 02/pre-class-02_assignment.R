@@ -7,19 +7,22 @@ exp.draws.1 = rexp(200)
 mean_1 = mean(exp.draws.1)
 sd_1 = sd(exp.draws.1)
 
-#Repeat for rates lambda = 0.2, 5, 7.3, 10
+#Repeat for rates lambda = 0.2
 exp.draws.0.2 = rexp(200, rate = 0.2)
 mean_0.2 = mean(exp.draws.0.2)
 sd_0.2 = sd(exp.draws.0.2)
 
+#lambda = 5
 exp.draws.5 = rexp(200, rate = 5)
 mean_5 = mean(exp.draws.5)
 sd_5 = sd(exp.draws.5)
 
+#lambda = 7.3
 exp.draws.7.3 = rexp(200, rate = 7.3)
 mean_7.3 = mean(exp.draws.7.3)
 sd_7.3 = sd(exp.draws.7.3)
 
+#lambda = 10
 exp.draws.10 = rexp(200, rate = 10)
 mean_10 = mean(exp.draws.10)
 sd_10 = sd(exp.draws.10)
@@ -67,4 +70,3 @@ col_371_mean = mean(big.exp.draws.1.mat[, 371])
 #Part F:
 col_means = colMeans(big.exp.draws.1.mat)
 hist(col_means)
-s
