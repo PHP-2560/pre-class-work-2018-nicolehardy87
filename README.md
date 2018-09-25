@@ -7,10 +7,12 @@ This folder contains your first pre-class assignment. Remember to complete the f
 ## Flipped Material 
 
 - Sign into [Datacamp](https://www.datacamp.com/)
-- Complete [Chapter 1](https://campus.datacamp.com/courses/php-15602560-statistical-programming-in-r/basics-of-r-programming?ex=1)
-- Complete [Manipulate Data in R](https://www.datacamp.com/courses/dplyr-data-manipulation-r-tutorial)
-- Complete the pre-class work below. <a href="https://raw.githubusercontent.com/PHP2560-Statistical-Programming-R/preclass/master/_rmarkdownfiles/r_basics_preclass.Rmd?token=ASm47UDHvgXZQN1_GDnRKURjwQcERzB1ks5Zusd_wA%3D%3D" download>Click here to copy the following into R Markdown</a>
+- Complete [Joining Data in R with dplyr](https://www.datacamp.com/courses/joining-data-in-r-with-dplyr) course. 
+- Complete these steps for the assignment:
+    - Create a new folder in your pre-class Repository called: `Week 03`
+    - Copy the `readme.md` and `pre-class-03.Rmd` document into this.
+    - Follow the instructions and commit often. 
 
 
 
-Then proceed to the Pre Week 02 Markdown file, complete this and commit your work often to begin to learn how to make small changes and committing. 
+Then proceed to the Pre Week 03 RMarkdown file, complete this and commit your work often to begin to learn how to make small changes and committing. 
