@@ -132,6 +132,3 @@ gapminder %>%
   filter(pop < lag(pop) & lifeExp > lag(lifeExp)) %>%
   print(n = 36)
 ```
-
-
-
