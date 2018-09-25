@@ -107,7 +107,6 @@ gapminder %>%
   arrange(sd) %>%
   slice(1:3)
 ```
-#hi
 ##Question 9:
 
 Subset gm to only include observations from 1992 and store the results as gm1992. What kind of object is this?
