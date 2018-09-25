@@ -34,7 +34,8 @@ gapminder %>%
 #Question 5:
 gapminder %>% 
   filter(lifeExp >= 80) %>%
-  select(country, lifeExp, year)
+  select(country, lifeExp, year) %>%
+  print(n = 22)
 
 #Question 6: 
 gapminder %>%
@@ -48,7 +49,8 @@ gapminder %>%
   filter(continent != "Asia") %>%
   group_by(continent, year) %>%
   summarise(avg_pop = mean(pop)) %>%
-  arrange(desc(avg_pop))
+  arrange(desc(avg_pop)) %>%
+  print(n = 48)
 
 #Question 8: 
 gapminder %>%
@@ -68,5 +70,6 @@ gm1992 %>% class()
 gapminder %>%
   arrange(country, year) %>%
   group_by(country) %>%
-  filter(pop < lag(pop) & lifeExp > lag(lifeExp))
+  filter(pop < lag(pop) & lifeExp > lag(lifeExp)) %>%
+  print(n = 36)
 
