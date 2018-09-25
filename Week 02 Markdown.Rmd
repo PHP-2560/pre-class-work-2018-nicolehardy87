@@ -1,6 +1,7 @@
 ---
-title: "PHP2560 Pset #1 (Week 02 Assignment)"
-output: html_document
+title: 'PHP2560 Pset #1 (Week 02 Assignment)'
+output:
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
