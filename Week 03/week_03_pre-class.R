@@ -27,16 +27,14 @@ gapminder %>%
 #Question 4: 
 gapminder %>%
   group_by(country) %>%
-  summarise(total_GDP = sum(gdpPercap)) %>%
+  summarise(total_GDP = sum(gdpPercap*pop)) %>%
   arrange(desc(total_GDP)) %>%
   slice(1:5)
 
 #Question 5:
 gapminder %>% 
-  group_by(country, year) %>%
   filter(lifeExp >= 80) %>%
-  select(country, lifeExp, year) %>%
-  print(n = 22)
+  select(country, lifeExp, year)
 
 #Question 6: 
 gapminder %>%
@@ -46,4 +44,29 @@ gapminder %>%
   slice(1:10)
 
 #Question 7: 
+gapminder %>%
+  filter(continent != "Asia") %>%
+  group_by(continent, year) %>%
+  summarise(avg_pop = mean(pop)) %>%
+  arrange(desc(avg_pop))
+
+#Question 8: 
+gapminder %>%
+  group_by(country) %>%
+  summarise(sd = sd(pop)) %>%
+  arrange(sd) %>%
+  slice(1:3)
+
+#Question 9: 
+#This is a tibble
+gm1992 = 
+  gapminder %>%
+    filter(year == 1992)
+gm1992 %>% class()
+
+#Question 10: 
+gapminder %>%
+  arrange(country, year) %>%
+  group_by(country) %>%
+  filter(pop < lag(pop) & lifeExp > lag(lifeExp))
 
