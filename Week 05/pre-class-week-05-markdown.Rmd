@@ -1,0 +1,80 @@
+---
+title: "Pre-Class Week 05"
+author: "Nicole Hardy"
+date: "7 de octubre de 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+suppressMessages(library(foreign))
+```
+
+## Question 1: Standardize Function
+### Part A: 
+A. Create a function called standardize.me() that takes a numeric vector as an argument, and returns the standardized version of the vector.
+
+```{r}
+#---------------------------------------------------------------------------
+# Pre-Class Week 05: 
+#---------------------------------------------------------------------------
+#Loads data on coronary heart disease
+wcgs <- read.dta("https://drive.google.com/uc?export=download&id=0B8CsRLdwqzbzYWxfN3ExQllBQkU")
+
+#A function that standardizes the data to make each variable have
+#mean = 0 and sd = 1
+standardized.me = function(x)
+{
+  x = (x - mean(x, na.rm = TRUE))/sd(x, na.rm = TRUE)
+  return(x)
+}
+```
+
+### Part B: 
+B. Assign all the numeric columns of the original WCGS dataset to a new dataset called WCGS.new.
+
+```{r}
+#Create new dataset with just numeric columns
+WCGS.new = wcgs[,which(lapply(wcgs, class) == "numeric" | lapply(wcgs, class) == "integer")]
+```
+
+### Part C/D:
+C. Using a loop and your new function, standardize all the variables WCGS.new dataset. 
+D. What should the mean and standard deviation of all your new standardized variables be? Test your prediction by running a loop. 
+
+The mean of the standardized data should be 0 and the standard deviation for the standardized variables should be 1. 
+
+```{r}
+#loops through dataset (minus id column) to standardize each column
+for (i in 2:dim(WCGS.new)[2])
+{
+  WCGS.new[,i] = standardized.me(WCGS.new[,i])
+  print(paste("Mean of column", i, "is", mean(WCGS.new[,i], na.rm = TRUE)))
+  print(paste("Standard deviation of column", i, "is", sd(WCGS.new[,i], na.rm = TRUE)))
+  print("") #to make it more readable. 
+}
+```
+
+## Question 2: 
+### Part A: 
+A. Using a loop, calculate the mean weight of the subjects separated by the type of CHD they have.
+
+```{r}
+#calculate mean weight of subjects by type of CHD using a loop
+types_CHD = as.character(unique(wcgs$typchd69))
+for (i in types_CHD) 
+{
+  print(paste("Mean weight of person with",i, "is", mean(wcgs$weight[which(wcgs$typchd69 == i)], na.rm = TRUE)))
+}
+```
+
+### Part B: 
+B.  Now do the same thing, but now don’t use a loop
+
+```{r}
+wcgs %>%
+  group_by(typchd69) %>%
+  summarise(mean_weight = mean(weight))
+```
+
