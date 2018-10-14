@@ -1,7 +1,7 @@
 # pre-class
 
 
-Make sure you commit this often with meaningfull messages. 
+Make sure you commit this often with meaningful messages. 
 
 ### Background
 
