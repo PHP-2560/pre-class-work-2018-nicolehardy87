@@ -1,0 +1,70 @@
+---
+title: "Pre-Class Week 06"
+author: "Nicole Hardy"
+date: "14 de octubre de 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Question 1: 
+1. Read the source code for each of the following three functions, puzzle out what they do, and then brainstorm better names.
+
+The first function check to see if the string begins with a certain prefix. I named it "starts_with_prefix."
+
+The second function removes the last entry in the vector. I named it "removes_last."
+
+The third function recycles vector y until a vector is outputted of length(x). I named it "recycle_y."
+
+```
+starts_with_prefix <- function(string, prefix) {
+  substr(string, 1, nchar(prefix)) == prefix
+}
+remove_last <- function(x) {
+  if (length(x) <= 1) return(NULL)
+  x[-length(x)]
+}
+recycle_y <- function(x, y) {
+  rep(y, length.out = length(x))
+}
+```
+
+## Question 2: 
+2. Compare and contrast rnorm() and MASS::mvrnorm(). How could you make them more consistent?
+
+```{}
+?rnorm
+?MASS::mvrnorm
+```
+
+From the help we can see that rnorm() takes the arguments: n = # of observations, mean = vector of means, sd = vector of standard deviations. 
+
+MASS:mvrnorm() takes the arguments: n = # of samples required, mu = a vector of means of the variables, Sigma = covariance matrix, tol = tolerance for lack of positive definitness in Sigma, empirical = logical where if true it Sigma specifies the empirical not population mean and covariance matrix, eispack = logical where values other than false are an error. 
+
+The have in common n. However, their names for mean and standard deviations differ.
+
+To be consistent I would assign the arguments the same names. For example instead of mu I would say mean. The name for standard deviation/Sigma differs because the multivariate case deals with a matrix of covariances (Sigma) and the univariate case deals with a vector of standard deviations (sd). They have different names because they are different data types, which would make it challenging to give these two arguments the same name. 
+
+#Question 3:
+3. Use lapply() and an anonymous function to find the coefficient of variation (the standard deviation divided by the mean) for all columns in the mtcars dataset.
+
+```{r}
+lapply(mtcars, function(x) sd(x)/mean(x))
+```
+
+## Question 4:
+### Part a:
+4a. Use vapply() to compute the standard deviation of every column in a numeric data frame. 
+
+```{r}
+vapply(mtcars, sd, numeric(1))
+```
+
+### Part b:
+4b. Compute the standard deviation of every numeric column in a mixed data frame. (Hint: you’ll need to use vapply() twice.)
+
+```{r}
+vapply(iris[,vapply(iris, is.numeric, logical(1))], sd, numeric(1))
+```
