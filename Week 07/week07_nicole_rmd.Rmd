@@ -18,29 +18,37 @@ Gambler’s Ruin: Suppose you have a bankroll of $1000 and make bets of $100 on 
 The probability that you have “busted” (lost all your money) by the time you have placed your one hundredth bet. The mean and variance of your bankroll after 100 hands (including busts).
 
 ```{r, cache = TRUE}
-#--------------------------------------------------------------
-#Question 1:
-#--------------------------------------------------------------
+#-----------------------------------------------------------------------
+# Building of various functions
+#-----------------------------------------------------------------------
 # Keeps track of wins and losses up to max number of bets or no bankroll
-game_play = function(game, bankroll, num_bets, max_bets, bet)
+play = function(game, bankroll, win_prob, num_bets, hands, bet, incr)
 {
   wins = 0
   losses = 0
-  while (bankroll > 0 & num_bets < max_bets) 
+  start = win_prob
+  while (bankroll > 0 & (num_bets < hands) & (win_prob <= 1)) 
   {
-    roll = rbinom(1, 1, 0.5)
-    if(roll == 1)
+    roll = rbinom(1, 1, win_prob)
+    if((roll == 1) & (win_prob < 1)) 
     {
       bankroll = bankroll + bet
       wins = wins + 1
       num_bets = num_bets + 1
-    } else
+      win_prob = win_prob + incr
+    } else if(roll == 0)
     {
       bankroll = bankroll - bet
       losses = losses + 1
       num_bets = num_bets + 1
+      win_prob = start
+    } else if(roll == 1 & win_prob == 1)
+    {
+      bankroll = bankroll + bet
+      wins = wins + 1
+      num_bets = num_bets + 1
     }
-  }
+  } 
   game_matrix(game, wins, losses, bankroll)
 }
 
@@ -52,21 +60,6 @@ game_matrix = function(entry, num_win, num_loss, money_left)
   trial[entry,2] <<- num_win/trial[entry,1]
   trial[entry,3] <<- num_loss/trial[entry, 1]
   trial[entry, 4] <<- money_left
-}
-
-#Repeats everything for a set # of iterations. Saves results in matrix
-#Prints probabilities, mean and variance
-many_trials = function(bankroll, bet, num_bets, max_bets, iter, mean_fun, var_fun)
-{
-  for (game in 1:iter) 
-  {
-    bankroll2 = bankroll
-    losses = 0
-    wins = 0 
-    game_play(game, bankroll2, num_bets, max_bets, bet)
-  }
-  return(c(calc_prob_busted(trial, iteration = iter), mean_time_busted(trial), 
-           mean = mean_fun(trial$bankroll), var = var_fun(trial$bankroll)))
 }
 
 #Calculates probability of busting for a given number of maximum bets
@@ -92,9 +85,22 @@ empty_trial_mat = function(iter)
   colnames(trial) <<- c("total", "prob of winning", "prob of losing", "bankroll")
 }
 
+#Repeats everything for a set # of iterations. Saves results in matrix
+#Prints probabilities, mean and variance
+replicate_hands = function(bankroll, win_prob, bet, num_bets, hands, iter, incr, mean_fun, var_fun)
+{
+  for (game in 1:iter) 
+  {
+    losses = 0
+    wins = 0 
+    play(game, bankroll, win_prob, num_bets, hands, bet, incr)
+  }
+  return(c(calc_prob_busted(trial, iteration = iter), mean_time_busted(trial), 
+           mean = mean_fun(trial$bankroll), var = var_fun(trial$bankroll)))
+}
 #Creates empty matrix and runs everything for 5000 trials, 100 hands
 empty_trial_mat(5000)
-many_trials(1000, 100, 0, 100, 5000, mean, var)
+replicate_hands(bankroll = 1000, win_prob = 0.5, bet = 100, num_bets = 0, hands = 100, iter = 5000, incr = 0, mean_fun =  mean, var_fun = var)
 head(trial)
 ```
 
@@ -104,7 +110,7 @@ The probability that you have busted by the time you have placed your five hundr
 ```{r}
 #Creates empty matrix and runs everything for 5000 trials, 500 hands
 empty_trial_mat(5000)
-many_trials(1000, 100, 0, 500, 5000, mean, var)
+replicate_hands(bankroll = 1000, win_prob = 0.5, bet = 100, num_bets = 0, hands = 500, iter = 5000, incr = 0, mean_fun =  mean, var_fun = var)
 head(trial)
 ```
 
@@ -115,7 +121,7 @@ The mean time you go bust, given that you go bust within the first 5000 hands.
 #Mean time of bust 5000 hands
 #Creates empty matrix and runs everything for 5000 trials, 5000 hands
 empty_trial_mat(5000)
-many_trials(1000, 100, 0, 5000, 5000, mean, var)
+replicate_hands(bankroll = 1000, win_prob = 0.5, bet = 100, num_bets = 0, hands = 5000, iter = 5000, incr = 0, mean_fun =  mean, var_fun = var)
 head(trial)
 ```
 
@@ -125,70 +131,68 @@ Suppose you have a game where the probability of winning on your first hand is 4
 ### Part a:
 Is this a fair game? Simulate one hundred thousand sequential hands to determine the size of your return. Then repeat this simulation 99 more times to get a range of values to calculate the expectation.
 ```{r, cache = TRUE}
-markov_play = function(game, bankroll, win_prob, num_bets, max_bets, bet)
-{
-  wins = 0
-  losses = 0
-  while (num_bets < max_bets & win_prob <= 1) 
-  {
-    roll = rbinom(1, 1, win_prob)
-    if(roll == 1 & win_prob < 1)
-    {
-      bankroll = bankroll + bet
-      wins = wins + 1
-      num_bets = num_bets + 1
-      win_prob = win_prob + 0.01
-    } else if(roll == 0)
-    {
-      bankroll = bankroll - bet
-      losses = losses + 1
-      num_bets = num_bets + 1
-      win_prob = 0.48
-    } else if(roll == 1 & win_prob == 1)
-    {
-      bankroll = bankroll + bet
-      wins = wins + 1
-      num_bets = num_bets + 1
-    }
-  }
- game_matrix(game, wins, losses, bankroll)
-}
-
-markov_trials = function(bankroll, win_prob, bet, num_bets, max_bets, iter, mean_fun, var_fun)
-{
-  for (game in 1:iter) 
-  {
-    bankroll2 = bankroll
-    losses = 0
-    wins = 0 
-    markov_play(game, bankroll2, win_prob, num_bets, max_bets, bet)
-  }
-  return(c(calc_prob_busted(trial, iteration = iter), mean_time_busted(trial), 
-           mean = mean_fun(trial$bankroll), var = var_fun(trial$bankroll)))
-}
-
+#Markov example. win_prob incr. by 1% for each win. Goes back to 48% for losses
 empty_trial_mat(100)
-markov_trials(1000, 0.48, 100, 0, 100000, 100, mean, var)
+replicate_hands(bankroll = 500000, win_prob = 0.48, bet = 100, num_bets = 0, hands = 100000, iter = 100, incr = 0.01, mean_fun =  mean, var_fun = var)
 head(trial)
 range(trial$bankroll)
 ```
 
-No, this does not seem to be fair since the expectation is non-zero. 
+No, this does not seem to be fair since the expectation is less than the starting bankroll of 500,000. 
 
 ### Part B:
 Repeat this process but change the starting probability to a new value within 2% either way. Get the expected return after 100 repetitions. Keep exploring until you have a return value that is as fair as you can make it. Can you do this automatically?
 ```{r}
-prob = seq(from = 0, to = 1, by = 0.1)
-results = list()
-for(i in 1:length(prob))
-  {
-    results[[i]] = markov_trials(1000, prob[i], 100, 0, 100000, 100, mean, var)
-  }
+#start at win_prob = 50%
+empty_trial_mat(100)
+replicate_hands(bankroll = 500000, win_prob = 0.50, bet = 100, num_bets = 0, hands = 100000, iter = 100, incr = 0.01, mean_fun =  mean, var_fun = var)
+
+#start at win_prob = 46%
+empty_trial_mat(100)
+replicate_hands(bankroll = 500000, win_prob = 0.46, bet = 100, num_bets = 0, hands = 100000, iter = 100, incr = 0.01, mean_fun =  mean, var_fun = var)
+
+#sets inital values before loop
+prob = seq(from = .46, to = .5, by = 0.001)
+count = 1
+money = 500000
+empty_trial_mat(100)
+test = replicate_hands(bankroll = money, win_prob = prob[1], bet = 100, num_bets = 0, hands = 100000, iter = 100, incr = 0.01, mean_fun = mean, var_fun =  var)
+
+#searches for probability that gives the expectation to be +/- 4% of the starting bankroll
+while(test[[3]] > 1.04*money | test[[3]] < 0.96*money)
+{
+  count = count + 1
+  test = replicate_hands(bankroll = money, win_prob = prob[count], bet = 100, num_bets = 0, hands = 100000, iter = 100, incr = 0.01, mean_fun = mean, var_fun =  var)
+  print(prob[count])
+}
 ```
 
-The return value closest to a fair game is 82%. Yes, it can be done automatically. 
-
+The return value closest to a fair game is 48.9%. Yes, it can be done automatically. 
 ### Part C: 
 Repeat again, keeping the initial probability at 48%, but this time change the probability increment to a value different from 1%. Get the expected return after 100 repetitions. Keep changing this value until you have a return value that is as fair as you can make it. 
+```{r}
+#start at incr = 0.05%
+empty_trial_mat(100)
+replicate_hands(bankroll = 500000, win_prob = 0.48, bet = 100, num_bets = 0, hands = 100000, iter = 100, incr = 0.005, mean_fun =  mean, var_fun = var)
 
+#start at incr = 2%
+empty_trial_mat(100)
+replicate_hands(bankroll = 500000, win_prob = 0.48, bet = 100, num_bets = 0, hands = 100000, iter = 100, incr = 0.02, mean_fun =  mean, var_fun = var)
+
+#sets inital values before loop
+increment = seq(from = 0.005, to = 0.02, by = 0.0001)
+money = 500000
+count = 1
+empty_trial_mat(100)
+test = replicate_hands(500000, 0.48, 100, 0, 100000, 100, incr = increment[1], mean, var)
+
+#searches for increment that gives the expectation +/- 4% of the starting bankroll
+while(test[[3]] > 1.04*money | test[[3]] < 0.96*money)
+{
+  count = count + 1
+  test = replicate_hands(bankroll = money, win_prob = 0.48, bet = 100, num_bets = 0, hands = 100000, iter = 100, incr = increment[count], mean_fun = mean, var_fun = var)
+  print(increment[count])
+}
+```
+The increment value that produces the most fair game is 0.0167. 
 
